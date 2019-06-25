@@ -3,6 +3,17 @@ import requests
 import csv
 import datetime
 from time import strptime
+import wget
+import os
+
+
+# Generate the latest results
+def gen_latest_results():
+	if os.path.exists('latest.tsv'):
+		os.remove('latest.tsv')
+	else:
+		pass
+	wget.download('http://eloratings.net/latest.tsv')
 
 
 # Generate the friendly windows for current calendar year
@@ -35,11 +46,17 @@ def gen_friendly_window():
 # Use the dates generated from gen_friendly_window()
 def friendlywindow():
 	lisdate = []
-	csvfile = open('calendar.csv', 'r').read()
+	try:
+		csvfile = open('calendar.csv', 'r').read()
+	except FileNotFoundError:
+		return "Calendar"
 	reader = csvfile.split('\n\n')
 	for line in reader:
-		line = line.split(',')
-		lisdate.append([line[0], line[1], line[2], line[3], line[4], line[5]])
+		try:
+			line = line.split(',')
+			lisdate.append([line[0], line[1], line[2], line[3], line[4], line[5]])
+		except IndexError:
+			pass
 	return lisdate
 
 
@@ -68,7 +85,10 @@ def getCurrentRankings():
 # Update rankings based on the current matches being played
 def updateRankings(year, month, Date, lisdate):
 	DateThresh = datetime.date(year, month, Date)
-	latestResults = open("latest.tsv", "r").read()
+	try:
+		latestResults = open("latest.tsv", "r").read()
+	except FileNotFoundError:
+		return "Latest"
 	latestResults = latestResults.split("\n")
 
 	tourncsv = open("FIFA_Tournaments.csv", 'r')
@@ -78,10 +98,14 @@ def updateRankings(year, month, Date, lisdate):
 		tourn = tourn.split(",")
 		tourndict[tourn[0]] = tourn[1]
 
-	csvfile = open('FIFA_Ranking_Data.csv', 'r')
+	try:
+		csvfile = open('FIFA_Ranking_Data.csv', 'r')
+	except FileNotFoundError:
+		return "Ranking"
 	next(csvfile)
 	next(csvfile)
 	csvdata = csvfile.read().split("\n\n")
+	
 	csvfile.close()
 	FIFAData = []
 	FIFADataDict = {}
