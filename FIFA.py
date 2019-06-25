@@ -42,7 +42,7 @@ def gen_friendly_window():
 			writer.writerow([2019, y,int(start), 2019, y, int(end)])
 	csvfile.close()
 
-gen_friendly_window()
+
 # Use the dates generated from gen_friendly_window()
 def friendlywindow():
 	lisdate = []
