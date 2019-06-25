@@ -22,10 +22,10 @@ def gen_friendly_window():
 	soup = BeautifulSoup(source, 'lxml')
 
 	calendar = soup.find('body')
-	ft = calendar.find('div', {'class': ['activeTabContent']})
+	ft = calendar.find('div', 'activeTabContent')
 	friendly = []
 
-	friendly = ft.find_all('li', {'class': ['calendar-event event']})
+	friendly = ft.find_all('li', 'calendar-event event')
 	csvfile = open('calendar.csv', 'w')
 	writer = csv.writer(csvfile)
 	for match in friendly:
@@ -42,7 +42,7 @@ def gen_friendly_window():
 			writer.writerow([2019, y,int(start), 2019, y, int(end)])
 	csvfile.close()
 
-
+gen_friendly_window()
 # Use the dates generated from gen_friendly_window()
 def friendlywindow():
 	lisdate = []
@@ -73,10 +73,10 @@ def getCurrentRankings():
 	writer.writerow(['TeamRank', 'TeamCode', 'TeamName', 'TeamPoints'])
 
 	for team in ca:
-		teamName = team.find('span', {'class': ['fi-t__nText']}).text.strip()
-		teamCode = team.find('span', {'class': ['fi-t__nTri']}).text.strip()
-		teamPoints = team.find('td', {'class': ['fi-table__td fi-table__points']}).text.strip()
-		teamRank = team.find('td', {'class': ['fi-table__td fi-table__rank']}).text.strip()
+		teamName = team.find('span', 'fi-t__nText').text.strip()
+		teamCode = team.find('span', 'fi-t__nTri').text.strip()
+		teamPoints = team.find('td', 'fi-table__td fi-table__points').text.strip()
+		teamRank = team.find('td', 'fi-table__td fi-table__rank').text.strip()
 		writer.writerow([teamRank, teamCode, teamName, teamPoints])
 
 	csvfile.close()
