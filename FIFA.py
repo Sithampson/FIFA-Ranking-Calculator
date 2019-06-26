@@ -26,7 +26,7 @@ def gen_friendly_window():
 	friendly = []
 
 	friendly = ft.find_all('li', 'calendar-event event')
-	csvfile = open('calendar.csv', 'w')
+	csvfile = open('calendar.csv', 'w', newline = '')
 	writer = csv.writer(csvfile)
 	for match in friendly:
 		line = match.text.strip()
@@ -50,7 +50,7 @@ def friendlywindow():
 		csvfile = open('calendar.csv', 'r').read()
 	except FileNotFoundError:
 		return "Calendar"
-	reader = csvfile.split('\n\n')
+	reader = csvfile.split('\n')
 	for line in reader:
 		try:
 			line = line.split(',')
@@ -68,7 +68,7 @@ def getCurrentRankings():
 	allTeams = soup.find('tbody')
 	ca = allTeams.find_all('tr')
 
-	csvfile = open('FIFA_Ranking_Data.csv', 'w')
+	csvfile = open('FIFA_Ranking_Data.csv', 'w', newline = '')
 	writer = csv.writer(csvfile)
 	writer.writerow(['TeamRank', 'TeamCode', 'TeamName', 'TeamPoints'])
 
@@ -103,12 +103,13 @@ def updateRankings(year, month, Date, lisdate):
 	except FileNotFoundError:
 		return "Ranking"
 	next(csvfile)
-	next(csvfile)
-	csvdata = csvfile.read().split("\n\n")
+	csvdata = csvfile.read().split("\n")
 	
 	csvfile.close()
 	FIFAData = []
 	FIFADataDict = {}
+	bigTourn = {'CA': [0, 18, 18], 'AR': [0, 44, 36], 'CCH': [0, 24, 24]}
+
 	for data in csvdata:
 		data = data.split(",")
 		if(len(data) == 4):
@@ -146,7 +147,16 @@ def updateRankings(year, month, Date, lisdate):
 				elif matchtype == 'CQ':
 					change *= 25
 				elif matchtype == 'CC':
-					change *= 35
+					matches = bigTourn[currentResult[7]][1]
+					if (bigTourn[currentResult[7]][0] < matches):
+						change *= 35
+						if (bigTourn[currentResult[7]][0] >= bigTourn[currentResult[7]][2]):
+							rating2 += change
+					# Quarterfinals
+					else:
+						change *= 40
+						rating2 += change
+					bigTourn[currentResult[7]][0] += 1
 
 				rating1 += change
 				rating2 -= change
