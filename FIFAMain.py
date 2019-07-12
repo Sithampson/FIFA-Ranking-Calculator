@@ -9,22 +9,14 @@ class Window(QtWidgets.QMainWindow, FIFApp.Ui_MainWindow):
         super(Window, self).__init__(parent)
         self.setupUi(self)
         self.pushButton.clicked.connect(self.but_pushed)
-        self.pushButton_2.clicked.connect(self.message_box)
         self.actionLatest_Fixtures.triggered.connect(self.latest_fixtures)
-        self.actionFIFA_International_Window.triggered.connect(self.Inter_Window)
         self.actionCurrent_FIFA_Rankings.triggered.connect(self.FIFA_Rankings)
 
     def latest_fixtures(self):
         FIFA.gen_latest_results()
 
-    def Inter_Window(self):
-        FIFA.gen_friendly_window()
-
     def FIFA_Rankings(self):
         FIFA.getCurrentRankings()
-
-    def message_box(self):
-        buttonReply = QtWidgets.QMessageBox.warning(self, 'PyQt5 message', "Do you like PyQt5?")
 
     def but_pushed(self):
         lisdate = FIFA.friendlywindow()

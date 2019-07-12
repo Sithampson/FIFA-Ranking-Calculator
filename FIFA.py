@@ -16,34 +16,7 @@ def gen_latest_results():
 	wget.download('http://eloratings.net/latest.tsv')
 
 
-# Generate the friendly windows for current calendar year
-def gen_friendly_window():
-	source = requests.get('https://www.fifa.com/calendar/').text
-	soup = BeautifulSoup(source, 'lxml')
-
-	calendar = soup.find('body')
-	ft = calendar.find('div', 'activeTabContent')
-	friendly = []
-
-	friendly = ft.find_all('li', 'calendar-event event')
-	csvfile = open('calendar.csv', 'w', newline = '')
-	writer = csv.writer(csvfile)
-	for match in friendly:
-		line = match.text.strip()
-		new = line.find('Official or friendly matches', 0, len(line))
-		if new != -1:
-			start = line[0:2]
-			end = line[5:7]
-			month = line[8:11]
-
-			mscode = month
-			y = strptime(mscode,'%b').tm_mon
-					
-			writer.writerow([2019, y,int(start), 2019, y, int(end)])
-	csvfile.close()
-
-
-# Use the dates generated from gen_friendly_window()
+# Use the dates from calendar.csv
 def friendlywindow():
 	lisdate = []
 	try:
@@ -150,12 +123,18 @@ def updateRankings(year, month, Date, lisdate):
 					matches = bigTourn[currentResult[7]][1]
 					if (bigTourn[currentResult[7]][0] < matches):
 						change *= 35
-						if (bigTourn[currentResult[7]][0] >= bigTourn[currentResult[7]][2]):
-							rating2 += change
+						if bigTourn[currentResult[7]][0] >= bigTourn[currentResult[7]][2]:
+							if change < 0 and currentResult[5] == currentResult[6]:
+								rating1 -= change
+							elif currentResult[5] == currentResult[6]:
+								rating2 += change
 					# Quarterfinals
 					else:
 						change *= 40
-						rating2 += change
+						if change < 0 and currentResult[5] == currentResult[6]:
+							rating1 -= change
+						elif currentResult[5] == currentResult[6]:
+							rating2 += change
 					bigTourn[currentResult[7]][0] += 1
 
 				rating1 += change
