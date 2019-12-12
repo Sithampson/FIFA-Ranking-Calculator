@@ -24,7 +24,7 @@ class Window(QtWidgets.QMainWindow, FIFApp.Ui_MainWindow):
             buttonReply = QtWidgets.QMessageBox.warning(self, 'App Error', "Please download the FIFA International Window from the Download menu.")
             return
 
-        FIFAData = FIFA.updateRankings(2019,6,14, lisdate)
+        FIFAData = FIFA.updateRankings(lisdate)
 
         if FIFAData == "Latest":
             buttonReply = QtWidgets.QMessageBox.warning(self, 'App Error', "Please download latest fixtures from the Download menu.")
@@ -50,7 +50,7 @@ class Window(QtWidgets.QMainWindow, FIFApp.Ui_MainWindow):
             item = self.tableWidget.item(cnt, 2)
             item.setText(str(round(serial[3])))
             cnt += 1
-
+        
 
 app = QtWidgets.QApplication(sys.argv)
 ui = Window()

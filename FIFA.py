@@ -3,6 +3,7 @@ import requests
 import csv
 import datetime
 from time import strptime
+import arrow
 import wget
 import os
 
@@ -37,6 +38,11 @@ def friendlywindow():
 def getCurrentRankings():
 	source = requests.get('https://www.fifa.com/fifa-world-ranking/ranking-table/men/').text
 	soup = BeautifulSoup(source, 'lxml')
+	csfile = open('Ranking_Update_Dates.csv', 'w', newline = '')
+	writer = csv.writer(csfile)
+	rankingdate = soup.find('div', 'fi-selected-item').text.strip()
+	writer.writerow([rankingdate])
+	csfile.close()
 
 	allTeams = soup.find('tbody')
 	ca = allTeams.find_all('tr')
@@ -56,8 +62,19 @@ def getCurrentRankings():
 
 
 # Update rankings based on the current matches being played
-def updateRankings(year, month, Date, lisdate):
-	DateThresh = datetime.date(year, month, Date)
+def updateRankings(lisdate):
+	try:
+		rankdate = open("Ranking_Update_Dates.csv").read()
+	except FileNotFoundError:
+		return "Ranking"
+
+	a = rankdate
+	s = arrow.get(a, 'D MMMM YYYY')
+	year = s.format('YYYY')
+	month = s.format('MM')
+	Date = s.format('DD')
+
+	DateThresh = datetime.date(int(year), int(month), int(Date))
 	try:
 		latestResults = open("latest.tsv", "r").read()
 	except FileNotFoundError:
